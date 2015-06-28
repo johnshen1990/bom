@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xishi.bom.dao.query.tran.TrandataDao">
+    <resultMap id="Trandata" type="com.xishi.bom.entity.tran.Trandata">
+        <id property="uuid" column="UUID" jdbcType="VARCHAR"/>
+        <result property="agtNo" column="AGT_NO" jdbcType="VARCHAR"/>
+        <result property="ouuid" column="OUUID" jdbcType="VARCHAR"/>
+        <result property="clrDt" column="CLR_DT" jdbcType="VARCHAR"/>
+        <result property="mercId" column="MERC_ID" jdbcType="VARCHAR"/>
+        <result property="trmNo" column="TRM_NO" jdbcType="VARCHAR"/>
+        <result property="equNo" column="EQU_NO" jdbcType="VARCHAR"/>
+        <result property="innerMercId" column="INNER_MERC_ID" jdbcType="VARCHAR"/>
+        <result property="corgNo" column="CORG_NO" jdbcType="VARCHAR"/>
+        <result property="tranDt" column="TRAN_DT" jdbcType="VARCHAR"/>
+        <result property="tranTm" column="TRAN_TM" jdbcType="VARCHAR"/>
+        <result property="mccCd" column="MCC_CD" jdbcType="VARCHAR"/>
+        <result property="batNo" column="BAT_NO" jdbcType="VARCHAR"/>
+        <result property="posSeqNo" column="POS_SEQ_NO" jdbcType="VARCHAR"/>
+        <result property="ctxnDt" column="CTXN_DT" jdbcType="VARCHAR"/>
+        <result property="posOprId" column="POS_OPR_ID" jdbcType="VARCHAR"/>
+        <result property="tranFlg" column="TRAN_FLG" jdbcType="VARCHAR"/>
+        <result property="tranCd" column="TRAN_CD" jdbcType="VARCHAR"/>
+        <result property="corgRcd" column="CORG_RCD" jdbcType="VARCHAR"/>
+        <result property="corgTranSts" column="CORG_TRAN_STS" jdbcType="VARCHAR"/>
+        <result property="tranSts" column="TRAN_STS" jdbcType="VARCHAR"/>
+        <result property="inMod" column="IN_MOD" jdbcType="VARCHAR"/>
+        <result property="crdNo" column="CRD_NO" jdbcType="VARCHAR"/>
+        <result property="ccy" column="CCY" jdbcType="VARCHAR"/>
+        <result property="tranAmt" column="TRAN_AMT" jdbcType="NUMERIC"/>
+        <result property="refAmt" column="REF_AMT" jdbcType="NUMERIC"/>
+        <result property="refFeeAmt" column="REF_FEE_AMT" jdbcType="NUMERIC"/>
+        <result property="corgFeeRat" column="CORG_FEE_RAT" jdbcType="NUMERIC"/>
+        <result property="corgFeeAmt" column="CORG_FEE_AMT" jdbcType="NUMERIC"/>
+        <result property="recFeeAmt" column="REC_FEE_AMT" jdbcType="NUMERIC"/>
+        <result property="payFeeAmt" column="PAY_FEE_AMT" jdbcType="NUMERIC"/>
+        <result property="bdFlg" column="BD_FLG" jdbcType="VARCHAR"/>
+        <result property="bnkTyp" column="BNK_TYP" jdbcType="VARCHAR"/>
+        <result property="issOrgNo" column="ISS_ORG_NO" jdbcType="VARCHAR"/>
+        <result property="crdTyp" column="CRD_TYP" jdbcType="VARCHAR"/>
+        <result property="crdFlg" column="CRD_FLG" jdbcType="VARCHAR"/>
+        <result property="icCrdFlg" column="IC_CRD_FLG" jdbcType="VARCHAR"/>
+        <result property="retReNo" column="RET_RE_NO" jdbcType="VARCHAR"/>
+        <result property="autCd" column="AUT_CD" jdbcType="VARCHAR"/>
+        <result property="rpCd" column="RP_CD" jdbcType="VARCHAR"/>
+        <result property="tmSmp" column="TM_SMP" jdbcType="VARCHAR"/>
+        <result property="signFlg" column="sign_flg" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="columns">
+	    TRAN.UUID,
+	    TRAN.MERC_ID,
+	    TRAN.INNER_MERC_ID,
+	    TRAN.TRAN_DT,
+	    TRAN.TRAN_TM,
+	    TRAN.TRM_NO,
+	    TRAN.BAT_NO,
+	    TRAN.POS_SEQ_NO,
+	    FLD.Fld_Ctt as 'TRAN_CD',
+	    TRAN.TRAN_AMT,
+	    TRAN.REC_FEE_AMT,
+	    TRAN.CRD_NO,
+	    TRAN.TRAN_STS,
+	    TRAN.POS_OPR_ID
+	</sql>
+    <sql id="dynamicWhere">
+        <where>
+            AND TRAN.INNER_MERC_ID = #{innerMercId}
+            AND TRAN.TRAN_STS='S'
+            AND TRAN.TRAN_CD IN ('2010020','2010030','2010060','2010070','2010080')
+            <if test="@Ognl @isNotEmpty(startDate)">AND TRAN.TRAN_DT &gt;= #{startDate}</if>
+            <if test="@Ognl @isNotEmpty(endDate)">AND TRAN.TRAN_DT &lt;= #{endDate}</if>
+            <if test="@Ognl @isNotEmpty(trmNo)">AND TRAN.TRM_NO LIKE CONCAT('%',#{trmNo},'%')</if>
+            <if test="@Ognl @isNotEmpty(crdNo)">AND TRAN.CRD_NO LIKE CONCAT('%',#{crdNo})</if>
+        </where>
+    </sql>
+    <select id="getAll" parameterType="com.xishi.bom.vo.tran.TrandataVo" resultMap="Trandata">
+        SELECT
+        <include refid="columns"/>
+        FROM t_posp_trandata TRAN
+        LEFT JOIN t_agtm_general_fld FLD ON TRAN.TRAN_CD=FLD.Fld_Ctt_Id
+        <include refid="dynamicWhere"/>
+        ORDER BY TRAN.TRAN_DT DESC, TRAN.TRAN_TM DESC
+    </select>
+</mapper>

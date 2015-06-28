@@ -1,0 +1,14 @@
+
+.svn/wc.db
+
+*.svn-base
+
+.svn/format
+
+.svn/entries
+
+.project
+
+src/main/resources/pro-config.properties
+
+src/main/resources/uat-config.properties

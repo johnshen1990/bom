@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xishi.bom.dao.core.merc.MercInfoDao">
+    <resultMap id="MercInfo" type="com.xishi.bom.entity.merc.MercInfo">
+        <id property="id" column="uuid" jdbcType="BIGINT"/>
+        <result property="flowMercId" column="flow_merc_id" jdbcType="VARCHAR"/>
+        <result property="flowMercNm" column="flow_merc_nm" jdbcType="VARCHAR"/>
+        <result property="flowMercCcrAbbr" column="flow_merc_ccr_abbr" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="columns">
+        uuid,flow_merc_id,flow_merc_nm,flow_merc_ccr_abbr
+	</sql>
+    <sql id="dynamicWhere">
+        <where>
+
+        </where>
+    </sql>
+    <select id="getByflowMercId" parameterType="string" resultMap="MercInfo">
+        SELECT
+        <include refid="columns"/>
+        FROM t_agtm_flow_merc_info info
+        WHERE info.flow_merc_id=#{flowMercId}
+    </select>
+</mapper>
